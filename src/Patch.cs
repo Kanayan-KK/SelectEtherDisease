@@ -28,8 +28,8 @@ namespace SelectEtherDisease
         {
             // vec = -1 : エーテル病治療時
             // vec = 1 : エーテル病感染時
-            if (vec <= 0 || !ether)
-                // エーテル病治療時 or エーテル病以外の変異時（自己変容）は何もしない
+            if ((vec == 0) || !ether)
+                // エーテル病以外の変異時（自己変容）は何もしない
                 return true;
 
             // キューを登録
@@ -70,9 +70,20 @@ namespace SelectEtherDisease
                 // エーテル病の進行度を取得
                 var currentLevel = element?.Value ?? 0;
 
-                // 罹患レベルが最大値に達している場合は除外
-                if (currentLevel == row.max)
-                    continue;
+                // 治療時(vec < 0)
+                if (req.vec < 0)
+                {
+                    // 罹患していない(Level 0)場合は除外
+                    if (currentLevel <= 0)
+                        continue;
+                }
+                // 感染時(vec > 0)
+                else
+                {
+                    // 罹患レベルが最大値に達している場合は除外
+                    if (currentLevel == row.max)
+                        continue;
+                }
 
                 etherDiseaseList.Add(row);
             }
@@ -91,6 +102,9 @@ namespace SelectEtherDisease
             // UI表示
             var layer = EClass.ui.AddLayer<LayerList>();
 
+            // 感染時と治療時でヘッダーテキストを変える
+            var headerText = req.vec > 0 ? "Select Ether Disease" : "Cure Ether Disease";
+
             layer.SetList(etherDiseaseList,
                     (row) =>
                     {
@@ -98,7 +112,8 @@ namespace SelectEtherDisease
                         var element = req.chara?.elements.GetElement(row.id);
 
                         // エーテル病の進行度を取得
-                        var nextValue = (element?.Value ?? 0) + 1;
+                        // 感染時は次のレベル、治療時は現在のレベルを表示
+                        var nextValue = (element?.Value ?? 0) + (req.vec > 0 ? req.vec : 0);
 
                         // example : 重力発生\n大きな重力\nとてつもない重力
                         var names = row.GetName();
@@ -107,25 +122,25 @@ namespace SelectEtherDisease
                         string[] nameArray = names.Split('\n');
 
                         // 進行度に対応したエーテル病名を返す
-                        if (nextValue - 1 < nameArray.Length)
+                        if (nextValue - 1 < nameArray.Length && nextValue - 1 >= 0)
                             return nameArray[nextValue - 1];
 
                         return names;
                     },
-                    (int index, string s) =>
+                    (index, _) =>
                     {
                         // リスト選択時処理
                         var selectedRow = etherDiseaseList[index];
-                        ApplyEther(req.chara, selectedRow, req.vec);
+                        Utils.ApplyEther(req.chara, selectedRow, req.vec);
                     })
                 .SetSize(500) // キャラ名がはみ出さないように横幅を長くする
-                .SetHeader($"Select Ether Disease : {req.chara?.Name}"); // 誰かわかるよう名前をリストヘッダーに表示
+                .SetHeader($"{headerText} : {req.chara?.Name}"); // 誰かわかるよう対象キャラの名前をヘッダーに表示
 
             // レイヤーが閉じるのを待つ
             EClass.core.StartCoroutine(WaitLayerClose(layer));
         }
 
-        // レイヤーが閉じられるタイミングをwhileで待機する処理
+        // レイヤーが閉じられるタイミングを待機する処理
         public static IEnumerator WaitLayerClose(Layer layer)
         {
             // try-finallyで確実にフラグをリセットする
@@ -150,65 +165,6 @@ namespace SelectEtherDisease
 
                 // 次のキューを処理
                 ProcessQueue();
-            }
-        }
-
-        // 対象キャラにエーテル病を発病させる処理
-        private static void ApplyEther(Chara c, SourceElement.Row row, int vec)
-        {
-            // 対象エーテル病の罹患状態を取得
-            var element = c.elements.GetElement(row.id);
-
-            // エーテル病進行度
-            var num = 1;
-
-            // 初感染ではない時は進行度変数を更新
-            if (element != null)
-            {
-                num = element.Value + vec;
-
-                if (num > element.source.max)
-                    num = element.source.max - 1;
-            }
-
-            // テキストログ表示
-            c.Say("mutation_gain", c);
-
-            // フィート設定
-            c.SetFeat(row.id, num);
-
-            // エーテル病罹患履歴がnullの時（初感染）は作成
-            c.c_corruptionHistory ??= [];
-
-            // エーテル病罹患履歴に追記
-            c.c_corruptionHistory.Add(row.id);
-
-            // 更新された罹患状態を取得
-            var updatedElement = c.elements.GetElement(row.id);
-
-            // ポップアップテキストを表示
-            WidgetPopText.Say("popEther".lang(updatedElement.Name, c.Name));
-            
-            // エーテル病初感染時の手紙イベント対応処理
-            if (c.IsPC && !EClass.player.flags.gotEtherDisease)
-            {
-                EClass.player.flags.gotEtherDisease = true;
-                var thing = ThingGen.Create("parchment");
-                thing.SetStr(53, "letter_ether");
-                var thing2 = ThingGen.Create("1165");
-                thing2.SetBlessedState(BlessedState.Normal);
-                var p = ThingGen.CreateParcel(null, thing2, thing);
-                EClass.world.SendPackage(p);
-            }
-
-            // エフェクト表示
-            if (EClass.core.IsGameStarted && c.pos != null)
-            {
-                c.PlaySound("mutation_ether");
-                c.PlayEffect("mutation");
-                var isNegative = row.tag.Contains("neg");
-                Msg.SetColor(isNegative ? Msg.colors.MutateBad : Msg.colors.MutateGood);
-                c.Say(row.GetText(isNegative ? "textDec" : "textInc", returnNull: true) ?? row.alias, c);
             }
         }
     }
