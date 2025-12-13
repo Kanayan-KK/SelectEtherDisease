@@ -7,7 +7,21 @@
     <version>0.23.237</version>
     <tags>General,QoL</tags>
     <description>
-        Select ether disease
+        エーテル病発病時に付与されるフィートをリストから選択可能にします。
+        エーテル病治療時に除去するフィートをリストから選択可能にします。
+        cfgファイルの修正で本Modの対象を制御できます。
+        デフォルトの対象はプレイヤー、パーティ、その他（NPC,敵）でそれぞれのオンオフが可能です。（デフォルトは全てオン）
+        cfgファイルの修正には「[url=https://steamcommunity.com/sharedfiles/filedetails/?id=3379819704] Mod Config GUI [/url]」の使用をおすすめします。
+        [hr][/hr]
+        Enables you to select the feat to be granted when contracting Ether Disease from a list.
+        Enables you to select the feat to be removed when curing Ether Disease from a list.
+        You can control the target of this Mod by modifying the cfg file.
+        The default targets are Player, Party, and Others (NPC, Enemy), each of which can be turned on/off. (Default is All On)
+        It is recommended to use "[url=https://steamcommunity.com/sharedfiles/filedetails/?id=3379819704] Mod Config GUI [/url]" to modify the cfg file.
+        [hr][/hr]
+        高評価、アワードありがとうございます。🙇
+        Thank you for the ratings and awards. 🙇
+        [url=https://github.com/Kanayan-KK/SelectEtherDisease] SourceCode [/url]
     </description>
     <builtin>false</builtin>
     <visibility>Public</visibility>
