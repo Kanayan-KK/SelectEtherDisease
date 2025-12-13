@@ -36,7 +36,7 @@
             // 感染時のみポップアップテキストを表示
             if (vec > 0)
                 WidgetPopText.Say("popEther".lang(updatedElement.Name, c.Name));
-            
+
             // エーテル病初感染時の手紙イベント対応処理
             if (c.IsPC && !EClass.player.flags.gotEtherDisease)
             {
@@ -54,10 +54,10 @@
             {
                 c.PlaySound("mutation_ether");
                 c.PlayEffect("mutation");
-                
+
                 // 感染時と治療時でテキストカラーを変える
                 Msg.SetColor(vec > 0 ? Msg.colors.MutateBad : Msg.colors.MutateGood);
-                
+
                 // 感染時と治療時で表示テキストを変える
                 var msgKey = (vec > 0) ? "textDec" : "textInc";
                 c.Say(row.GetText(msgKey, returnNull: true) ?? row.alias, c);

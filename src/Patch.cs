@@ -21,6 +21,9 @@ namespace SelectEtherDisease
         // リスト選択中フラグ
         public static bool isSelecting;
 
+        // パッチ実行中にエーテル抗体ポーションを消費したかどうかのフラグ
+        public static bool alreadyConsumed;
+
         [HarmonyPrefix]
         [HarmonyPatch(typeof(Chara), nameof(Chara.MutateRandom))]
         public static bool MutateRandom_Prefix(Chara __instance, int vec, int tries, bool ether, BlessedState state,
@@ -34,7 +37,7 @@ namespace SelectEtherDisease
 
             // コンフィグ判定
             bool enabled;
-            
+
             // コンフィグがNullだったら何もしない
             if (Plugin.Instance is null || Plugin.Instance.EnableForPlayer is null ||
                 Plugin.Instance.EnableForMember is null || Plugin.Instance.EnableForOther is null)
@@ -157,6 +160,31 @@ namespace SelectEtherDisease
                         // リスト選択時処理
                         var selectedRow = etherDiseaseList[index];
                         Utils.ApplyEther(req.chara, selectedRow, req.vec);
+
+                        // エーテル抗体ポーション消費処理
+                        // 足元のポーションを1つだけ消費する(スタック対応)
+                        // バッチ実行中に一度も消費していない場合のみ実行
+                        if (!alreadyConsumed)
+                        {
+                            var things = req.chara?.pos?.Things;
+                            if (things != null)
+                            {
+                                foreach (var thing in things)
+                                {
+                                    if (thing.id == "1165")
+                                    {
+                                        // 治療時(vec < 0)は呪われていないポーションを消費
+                                        // 感染時(vec > 0)は呪われているポーションを消費
+                                        if ((req.vec < 0 && !thing.IsCursed) || (req.vec > 0 && thing.IsCursed))
+                                        {
+                                            thing.ModNum(-1);
+                                            alreadyConsumed = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     })
                 .SetSize(500) // キャラ名がはみ出さないように横幅を長くする
                 .SetHeader($"{headerText} : {req.chara?.Name}"); // 誰かわかるよう対象キャラの名前をヘッダーに表示
@@ -187,6 +215,9 @@ namespace SelectEtherDisease
 
                 // 選択中フラグを更新
                 isSelecting = false;
+
+                // ポーション消費フラグを更新
+                alreadyConsumed = false;
 
                 // 次のキューを処理
                 ProcessQueue();

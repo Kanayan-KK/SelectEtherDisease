@@ -10,7 +10,7 @@ public static class ModInfo
 {
     public const string Guid = "Elin.SelectEtherDisease";
     public const string Name = "Select Ether Disease";
-    public const string Version = "1.0.0";
+    public const string Version = "1.0.1";
 }
 
 [BepInPlugin(ModInfo.Guid, ModInfo.Name, ModInfo.Version)]
