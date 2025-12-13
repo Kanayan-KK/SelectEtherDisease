@@ -1,5 +1,6 @@
 ﻿namespace SelectEtherDisease
 {
+    // 可読性を上げるために処理を外部化
     internal class Utils
     {
         // 対象キャラにエーテル病を発病させる処理
@@ -13,12 +14,7 @@
 
             // 初感染ではない時は進行度変数を更新
             if (element != null)
-            {
                 num = element.Value + vec;
-
-                if (num > element.source.max)
-                    num = element.source.max - 1;
-            }
 
             // テキストログ表示 (感染時のみ)
             if (vec > 0)
