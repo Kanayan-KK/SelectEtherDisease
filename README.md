@@ -1,8 +1,8 @@
-# SelectEther
+# SelectEtherDisease
 
 Elin Mod
 
-[SteamWorkShop](https://steamcommunity.com/sharedfiles/filedetails/?id=3621307738)
+[SteamWorkShop](https://steamcommunity.com/sharedfiles/filedetails/?id=)
 
 ## License
 
