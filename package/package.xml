@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Meta>
+    <title>Select Ether Disease</title>
+    <id>Elin.SelectEtherDisease</id>
+    <author>Quicee</author>
+    <loadPriority>100</loadPriority>
+    <version>0.23.237</version>
+    <tags>General,QoL</tags>
+    <description>
+        Select ether disease
+    </description>
+    <builtin>false</builtin>
+    <visibility>Public</visibility>
+</Meta>
