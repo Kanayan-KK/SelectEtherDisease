@@ -26,34 +26,13 @@ namespace SelectEtherDisease
             {
                 // キャラクターのエーテル病罹患状態を取得
                 var element = __instance.elements.GetElement(row.id);
+                
+                // エーテル病の進行度を取得
+                var currentLevel = element?.Value ?? 0;
 
-                if (element != null)
+                // 罹患レベルが最大値に達している場合は除外
+                if (currentLevel == row.max)
                     continue;
-
-                // 罹患済み and 罹患レベル最大値
-                if (element?.Value >= row.max)
-                    continue;
-
-                // 罹患レベルが１以上あるエーテル病の場合
-                if (row.max > 1)
-
-                    if (element is null)
-
-                        continue;
-                // var names = element
-
-
-
-                // 負の効果であるかのフラグ
-                // var isNegative = row.tag.Contains("neg");
-
-                // 祝福状態で負のエーテル病は弾く
-                // if (state >= BlessedState.Blessed && isNegative)
-                //     continue;
-
-                // 呪い状態で正のエーテル病は弾く
-                // if (state <= BlessedState.Cursed && !isNegative)
-                //     continue;
 
                 etherDiseaseList.Add(row);
             }
@@ -65,13 +44,30 @@ namespace SelectEtherDisease
             // UI表示
             LayerList layer = EClass.ui.AddLayer<LayerList>();
             layer.SetList(etherDiseaseList,
-                (row) => Element.Get(row.id).GetName(),
+                (row) =>
+                {
+                    // エーテル病取得
+                    var element = __instance.elements.GetElement(row.id);
+                    
+                    // エーテル病の進行度を取得
+                    var nextValue = (element?.Value ?? 0) + 1;
+                    
+                    // example : 重力発生\n大きな重力\nとてつもない重力
+                    var names = row.GetName();
+                    
+                    // 改行で分割して対象レベルの名前を表示
+                    string[] nameArray = names.Split('\n');
+                    
+                    return nameArray[nextValue - 1];
+                    // var index = Mathf.Clamp(nextValue - 1, 0, parts.Length - 1);
+                    // return parts[index];
+                },
                 (int index, string s) =>
-            {
-                var selectedRow = etherDiseaseList[index];
-                var name = selectedRow.GetName();
-                ApplyEther(__instance, selectedRow, vec);
-            });
+                {
+                    var selectedRow = etherDiseaseList[index];
+                    ApplyEther(__instance, selectedRow, vec);
+                })
+                .SetHeader("Select Ether Disease");
 
             __result = true;
             return false;
