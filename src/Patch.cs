@@ -32,6 +32,31 @@ namespace SelectEtherDisease
                 // エーテル病以外の変異時（自己変容）は何もしない
                 return true;
 
+            // コンフィグ判定
+            bool enabled;
+            
+            // コンフィグがNullだったら何もしない
+            if (Plugin.Instance is null || Plugin.Instance.EnableForPlayer is null ||
+                Plugin.Instance.EnableForMember is null || Plugin.Instance.EnableForOther is null)
+                return true;
+
+            if (__instance.IsPC)
+            {
+                enabled = Plugin.Instance.EnableForPlayer.Value;
+            }
+            else if (__instance.IsPCParty)
+            {
+                enabled = Plugin.Instance.EnableForMember.Value;
+            }
+            else
+            {
+                enabled = Plugin.Instance.EnableForOther.Value;
+            }
+
+            if (!enabled)
+                // コンフィグで無効の場合は通常の処理を行う
+                return true;
+
             // キューを登録
             queue.Enqueue(new MutationRequest { chara = __instance, vec = vec });
 
