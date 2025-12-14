@@ -1,9 +1,11 @@
 ﻿namespace SelectEtherDisease
 {
-    // 可読性を上げるために処理を外部化
+    // NOTE:可読性を上げるために処理を外部化
     internal class Utils
     {
-        // 対象キャラのエーテル病更新処理
+        /// <summary>
+        /// 対象キャラのエーテル病更新処理
+        /// </summary>
         public static void ApplyEther(Chara c, SourceElement.Row row, int vec)
         {
             // 対象エーテル病の罹患状態を取得

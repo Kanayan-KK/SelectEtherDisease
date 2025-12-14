@@ -73,7 +73,9 @@ namespace SelectEtherDisease
             return false;
         }
 
-        // キュー実行処理
+        /// <summary>
+        /// キュー実行処理
+        /// </summary>
         public static void ProcessQueue()
         {
             // リスト選択中 or 待機キュー無し
@@ -137,7 +139,7 @@ namespace SelectEtherDisease
                     (row) =>
                     {
                         // 病名表示処理
-                        
+
                         // エーテル病取得
                         var element = req.chara?.elements.GetElement(row.id);
 
@@ -155,40 +157,42 @@ namespace SelectEtherDisease
                         if (nextValue - 1 < nameArray.Length && nextValue - 1 >= 0)
                             return nameArray[nextValue - 1];
 
+                        // 進行度の存在しないエーテル病名はそのまま返す
                         return names;
                     },
                     (index, _) =>
                     {
                         // リスト選択時処理
-                        
+
                         // 選択エーテル病取得
                         var selectedRow = etherDiseaseList[index];
-                        
+
                         // エーテル病
                         Utils.ApplyEther(req.chara, selectedRow, req.vec);
 
+                        if (alreadyConsumed) 
+                            return;
+                        
                         // エーテル抗体ポーション消費処理
                         // 足元のポーションを1つだけ消費する(スタック対応)
                         // 実行中に一度も消費していない場合のみ実行
-                        if (!alreadyConsumed)
+                        var things = req.chara?.pos?.Things;
+                            
+                        if (things == null) 
+                            return;
+                            
+                        foreach (var thing in things)
                         {
-                            var things = req.chara?.pos?.Things;
-                            if (things != null)
+                            if (thing.id != "1165") 
+                                continue;
+                                
+                            // 治療時(vec < 0)は呪われていないポーションを消費
+                            // 感染時(vec > 0)は呪われているポーションを消費
+                            if ((req.vec < 0 && !thing.IsCursed) || (req.vec > 0 && thing.IsCursed))
                             {
-                                foreach (var thing in things)
-                                {
-                                    if (thing.id == "1165")
-                                    {
-                                        // 治療時(vec < 0)は呪われていないポーションを消費
-                                        // 感染時(vec > 0)は呪われているポーションを消費
-                                        if ((req.vec < 0 && !thing.IsCursed) || (req.vec > 0 && thing.IsCursed))
-                                        {
-                                            thing.ModNum(-1);
-                                            alreadyConsumed = true;
-                                            break;
-                                        }
-                                    }
-                                }
+                                thing.ModNum(-1);
+                                alreadyConsumed = true;
+                                break;
                             }
                         }
                     })
@@ -199,8 +203,10 @@ namespace SelectEtherDisease
             EClass.core.StartCoroutine(WaitLayerClose(layer));
         }
 
-        // レイヤーが閉じられるタイミングを待機する処理
-        public static IEnumerator WaitLayerClose(Layer layer)
+        /// <summary>
+        /// レイヤーが閉じられるタイミングを待機する処理
+        /// </summary>
+        private static IEnumerator WaitLayerClose(Layer layer)
         {
             // try-finallyで確実にフラグをリセットする
             try
@@ -222,8 +228,9 @@ namespace SelectEtherDisease
                 // 選択中フラグを更新
                 isSelecting = false;
 
-                // ポーション消費フラグを更新
-                alreadyConsumed = false;
+                // キューの消化が全て終わったタイミングでポーション消費フラグをリセット
+                if(queue.Count == 0)
+                    alreadyConsumed = false;
 
                 // 次のキューを処理
                 ProcessQueue();
