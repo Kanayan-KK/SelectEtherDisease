@@ -88,7 +88,7 @@ namespace SelectEtherDisease
             var candidates =
                 EClass.sources.elements.rows.Where(a => a.category == "ether" && !a.tag.Contains("noRandomMutation"));
 
-            // 罹患可能エーテル病リストを作成
+            // エーテル病リストを作成
             List<SourceElement.Row> etherDiseaseList = [];
             foreach (var row in candidates)
             {
@@ -136,6 +136,8 @@ namespace SelectEtherDisease
             layer.SetList(etherDiseaseList,
                     (row) =>
                     {
+                        // 病名表示処理
+                        
                         // エーテル病取得
                         var element = req.chara?.elements.GetElement(row.id);
 
@@ -158,12 +160,16 @@ namespace SelectEtherDisease
                     (index, _) =>
                     {
                         // リスト選択時処理
+                        
+                        // 選択エーテル病取得
                         var selectedRow = etherDiseaseList[index];
+                        
+                        // エーテル病
                         Utils.ApplyEther(req.chara, selectedRow, req.vec);
 
                         // エーテル抗体ポーション消費処理
                         // 足元のポーションを1つだけ消費する(スタック対応)
-                        // バッチ実行中に一度も消費していない場合のみ実行
+                        // 実行中に一度も消費していない場合のみ実行
                         if (!alreadyConsumed)
                         {
                             var things = req.chara?.pos?.Things;
