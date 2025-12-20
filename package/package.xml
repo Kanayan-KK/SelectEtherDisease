@@ -19,8 +19,6 @@
         The default targets are Player, Party, and Others (NPC, Enemy), each of which can be turned on/off. (Default is All On)
         It is recommended to use "[url=https://steamcommunity.com/sharedfiles/filedetails/?id=3379819704] Mod Config GUI [/url]" to modify the cfg file.
         [hr][/hr]
-        高評価、アワードありがとうございます。🙇
-        Thank you for the ratings and awards. 🙇
         [url=https://github.com/Kanayan-KK/SelectEtherDisease] SourceCode [/url]
     </description>
     <builtin>false</builtin>
