@@ -1,7 +1,7 @@
-using HarmonyLib;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using HarmonyLib;
 
 namespace SelectEtherDisease
 {
@@ -29,6 +29,10 @@ namespace SelectEtherDisease
         public static bool MutateRandom_Prefix(Chara __instance, int vec, int tries, bool ether, BlessedState state,
             ref bool __result)
         {
+            // Mod自体が無効なら何もしない
+            if (Plugin.Instance?.EnableMod != null && !Plugin.Instance.EnableMod.Value)
+                return true;
+
             // vec = -1 : エーテル病治療時
             // vec = 1 : エーテル病感染時
             if ((vec == 0) || !ether)
@@ -87,6 +91,7 @@ namespace SelectEtherDisease
             var req = queue.Peek();
 
             // エーテル病リスト候補を取得する
+            // Source: Chara.cs L-10073
             var candidates =
                 EClass.sources.elements.rows.Where(a => a.category == "ether" && !a.tag.Contains("noRandomMutation"));
 
@@ -103,7 +108,7 @@ namespace SelectEtherDisease
                 // 治療時(vec < 0)
                 if (req.vec < 0)
                 {
-                    // 罹患していない(Level 0)場合は除外
+                    // 罹患していない(Level 0)の場合は除外
                     if (currentLevel <= 0)
                         continue;
                 }
@@ -170,22 +175,22 @@ namespace SelectEtherDisease
                         // エーテル病
                         Utils.ApplyEther(req.chara, selectedRow, req.vec);
 
-                        if (alreadyConsumed) 
+                        if (alreadyConsumed)
                             return;
-                        
+
                         // エーテル抗体ポーション消費処理
                         // 足元のポーションを1つだけ消費する(スタック対応)
                         // 実行中に一度も消費していない場合のみ実行
                         var things = req.chara?.pos?.Things;
-                            
-                        if (things == null) 
+
+                        if (things == null)
                             return;
-                            
+
                         foreach (var thing in things)
                         {
-                            if (thing.id != "1165") 
+                            if (thing.id != "1165")
                                 continue;
-                                
+
                             // 治療時(vec < 0)は呪われていないポーションを消費
                             // 感染時(vec > 0)は呪われているポーションを消費
                             if ((req.vec < 0 && !thing.IsCursed) || (req.vec > 0 && thing.IsCursed))
@@ -229,7 +234,7 @@ namespace SelectEtherDisease
                 isSelecting = false;
 
                 // キューの消化が全て終わったタイミングでポーション消費フラグをリセット
-                if(queue.Count == 0)
+                if (queue.Count == 0)
                     alreadyConsumed = false;
 
                 // 次のキューを処理

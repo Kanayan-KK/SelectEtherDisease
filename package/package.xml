@@ -4,20 +4,34 @@
     <id>Elin.SelectEtherDisease</id>
     <author>Quicee</author>
     <loadPriority>100</loadPriority>
-    <version>0.23.237</version>
+    <version>0.23.263</version>
     <tags>General,QoL</tags>
     <description>
         エーテル病発病時に付与されるフィートをリストから選択可能にします。
         エーテル病治療時に除去するフィートをリストから選択可能にします。
-        cfgファイルの修正で本Modの対象を制御できます。
-        デフォルトの対象はプレイヤー、パーティ、その他（NPC,敵）でそれぞれのオンオフが可能です。（デフォルトは全てオン）
-        cfgファイルの修正には「[url=https://steamcommunity.com/sharedfiles/filedetails/?id=3379819704] Mod Config GUI [/url]」の使用をおすすめします。
+
+        Config設定値(修正には[url=https://steamcommunity.com/sharedfiles/filedetails/?id=3379819704] Mod Config GUI [/url]の使用推奨)
+        EnableMod(既定値:true): Mod機能自体の有効化
+        EnableForPlayer(既定値:true): プレイヤーへの適用
+        EnableForMember(既定値:true): パーティメンバーへの適用
+        EnableForOther(既定値:false): その他（NPC,敵）への適用
         [hr][/hr]
         Enables you to select the feat to be granted when contracting Ether Disease from a list.
         Enables you to select the feat to be removed when curing Ether Disease from a list.
-        You can control the target of this Mod by modifying the cfg file.
-        The default targets are Player, Party, and Others (NPC, Enemy), each of which can be turned on/off. (Default is All On)
-        It is recommended to use "[url=https://steamcommunity.com/sharedfiles/filedetails/?id=3379819704] Mod Config GUI [/url]" to modify the cfg file.
+
+        Config Settings (Recommended to use [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3379819704] Mod Config GUI [/url])
+        EnableMod (Default: true): Enables the functionality of this mod.
+        EnableForPlayer (Default: true): Applies to the player.
+        EnableForMember (Default: true): Applies to party members.
+        EnableForOther (Default: false): Applies to others (NPCs, enemies).
+        [hr][/hr]
+        可以让您从列表中选择获得或者治愈以太病时赋予的特征。
+
+        Config 设置项 (建议使用 [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3379819704] Mod Config GUI [/url])
+        EnableMod (默认: true): 启用此 Mod 的功能。
+        EnableForPlayer (默认: true): 应用于玩家。
+        EnableForMember (默认: true): 应用于队友。
+        EnableForOther (默认: false): 应用于其他角色（NPC、敌人）。
         [hr][/hr]
         [url=https://github.com/Kanayan-KK/SelectEtherDisease] SourceCode [/url]
     </description>

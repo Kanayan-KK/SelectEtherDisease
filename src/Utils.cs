@@ -30,25 +30,40 @@
 
             // エーテル病罹患履歴に追記 (感染時のみ)
             if (vec > 0)
+            {
+                // Source: Chara.cs L-10137
                 c.c_corruptionHistory.Add(row.id);
+            }
 
             // 更新された罹患状態を取得
             var updatedElement = c.elements.GetElement(row.id);
 
             // 感染時のみポップアップテキストを表示
             if (vec > 0)
-                WidgetPopText.Say("popEther".lang(updatedElement.Name, c.Name));
-
-            // エーテル病初感染時の手紙イベント対応処理
-            if (c.IsPC && !EClass.player.flags.gotEtherDisease)
             {
-                EClass.player.flags.gotEtherDisease = true;
-                var thing = ThingGen.Create("parchment");
-                thing.SetStr(53, "letter_ether");
-                var thing2 = ThingGen.Create("1165");
-                thing2.SetBlessedState(BlessedState.Normal);
-                var p = ThingGen.CreateParcel(null, thing2, thing);
-                EClass.world.SendPackage(p);
+                // Source: Chara.cs L-10141
+                WidgetPopText.Say("popEther".lang(updatedElement.Name, c.Name));
+            }
+
+            // エーテル病初感染時のイベント対応処理
+            if (c.IsPC && vec > 0)
+            {
+                // チュートリアル予約（ネルンのイベント）
+                // Source: Chara.cs L-9945 (in ModCorruption)
+                Tutorial.Reserve("ether");
+
+                // 手紙と抗体の小包イベント
+                // Source: Chara.cs L-10143
+                if (!EClass.player.flags.gotEtherDisease)
+                {
+                    EClass.player.flags.gotEtherDisease = true;
+                    var thing = ThingGen.Create("parchment");
+                    thing.SetStr(53, "letter_ether");
+                    var thing2 = ThingGen.Create("1165");
+                    thing2.SetBlessedState(BlessedState.Normal);
+                    var p = ThingGen.CreateParcel(null, thing2, thing);
+                    EClass.world.SendPackage(p);
+                }
             }
 
             // エフェクト再生とテキストログ表示
@@ -61,6 +76,7 @@
                 Msg.SetColor(vec > 0 ? Msg.colors.MutateBad : Msg.colors.MutateGood);
 
                 // 感染時と治療時で表示テキストを変える
+                // Source: Chara.cs L-10157
                 var msgKey = (vec > 0) ? "textDec" : "textInc";
                 c.Say(row.GetText(msgKey, returnNull: true) ?? row.alias, c);
             }
