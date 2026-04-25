@@ -131,6 +131,14 @@ namespace SelectEtherDisease
                 return;
             }
 
+            // 選択肢数の制限 (ChoiceCount > 0 の場合、ランダムに抽出)
+            if (Plugin.Instance?.ChoiceCount != null && Plugin.Instance.ChoiceCount.Value > 0 && etherDiseaseList.Count > Plugin.Instance.ChoiceCount.Value)
+            {
+                var rng = new System.Random();
+                etherDiseaseList = etherDiseaseList.OrderBy(x => rng.Next()).ToList();
+                etherDiseaseList = etherDiseaseList.Take(Plugin.Instance.ChoiceCount.Value).ToList();
+            }
+
             // 選択中フラグ更新
             isSelecting = true;
 

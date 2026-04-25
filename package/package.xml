@@ -15,6 +15,7 @@
         EnableForPlayer(既定値:true): プレイヤーへの適用
         EnableForMember(既定値:true): パーティメンバーへの適用
         EnableForOther(既定値:false): その他（NPC,敵）への適用
+        ChoiceCount(既定値:0): 選択肢の表示数（0で全件表示）
         [hr][/hr]
         Enables you to select the feat to be granted when contracting Ether Disease from a list.
         Enables you to select the feat to be removed when curing Ether Disease from a list.
@@ -24,6 +25,7 @@
         EnableForPlayer (Default: true): Applies to the player.
         EnableForMember (Default: true): Applies to party members.
         EnableForOther (Default: false): Applies to others (NPCs, enemies).
+        ChoiceCount (Default: 0): Number of choices to display (0 for all)
         [hr][/hr]
         可以让您从列表中选择获得或者治愈以太病时赋予的特征。
 
@@ -32,6 +34,7 @@
         EnableForPlayer (默认: true): 应用于玩家。
         EnableForMember (默认: true): 应用于队友。
         EnableForOther (默认: false): 应用于其他角色（NPC、敌人）。
+        ChoiceCount (默认: 0): 显示的选项数量（0 表示显示全部）
         [hr][/hr]
         [url=https://github.com/Kanayan-KK/SelectEtherDisease] SourceCode [/url]
     </description>

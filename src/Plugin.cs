@@ -10,7 +10,7 @@ public static class ModInfo
 {
     public const string Guid = "Elin.SelectEtherDisease";
     public const string Name = "Select Ether Disease";
-    public const string Version = "1.0.2";
+    public const string Version = "1.0.3";
 }
 
 [BepInPlugin(ModInfo.Guid, ModInfo.Name, ModInfo.Version)]
@@ -21,7 +21,7 @@ internal class Plugin : BaseUnityPlugin
     internal ConfigEntry<bool>? EnableForPlayer;
     internal ConfigEntry<bool>? EnableForMember;
     internal ConfigEntry<bool>? EnableForOther;
-
+    internal ConfigEntry<int>? ChoiceCount;
     private void Awake()
     {
         Instance = this;
@@ -29,6 +29,7 @@ internal class Plugin : BaseUnityPlugin
         EnableForPlayer = Config.Bind("General", "EnableForPlayer", true, "Enable selection for Player.");
         EnableForMember = Config.Bind("General", "EnableForMember", true, "Enable selection for Party Members.");
         EnableForOther = Config.Bind("General", "EnableForOther", false, "Enable selection for Others (NPCs,Enemies).");
+        ChoiceCount = Config.Bind("General", "ChoiceCount", 0, "Number of choices to display. 0 = All.");
         Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), ModInfo.Guid);
     }
 
